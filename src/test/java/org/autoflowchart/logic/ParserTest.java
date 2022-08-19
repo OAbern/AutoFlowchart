@@ -1,6 +1,7 @@
 package org.autoflowchart.logic;
 
 import org.autoflowchart.objects.Node;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -228,5 +229,9 @@ class ParserTest
 		assertSame(actual5.getNext(), actual7);
 		assertSame(actual6.getNext(), actual2);
 		assertTrue(actual3.getFalseNode().isNextJump());
+	}
+
+	private void assertEquals(Node n1, Node n2) {
+		Assertions.assertEquals(n1.getText(), n2.getText());
 	}
 }
