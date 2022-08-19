@@ -5,6 +5,7 @@ import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.stmt.*;
 import org.autoflowchart.utils.NotImplementedException;
 import org.autoflowchart.utils.Point;
+import org.autoflowchart.utils.ThreadLocalUtil;
 
 import java.util.Optional;
 
@@ -47,8 +48,8 @@ public abstract class Element
 	}
 
 	/*
-	Creates new node from statement, connects to this element and returns the last node.
-	 */
+        Creates new node from statement, connects to this element and returns the last node.
+         */
 	public Element connectStmt (Statement stmt, Elements waitList, int level)
 	{
 		Element lastElement;
@@ -80,7 +81,8 @@ public abstract class Element
 		} else if (stmt.isLocalClassDeclarationStmt()) {
 			throw new NotImplementedException();
 		} else if (stmt.isReturnStmt()) {
-			throw new NotImplementedException();
+			//throw new NotImplementedException();
+			lastElement = this.connectReturnStmt(stmt.asReturnStmt(), waitList, level);
 		} else if (stmt.isSwitchStmt()) {
 			throw new NotImplementedException();
 		} else if (stmt.isSynchronizedStmt()) {
@@ -295,6 +297,16 @@ public abstract class Element
 		}
 
 		return elements;
+	}
+
+	Element connectReturnStmt (ReturnStmt returnStmt, Elements waitList, int level) {
+		Node returnNode = getReturnNode();
+		this.setNext(returnNode);
+		return returnNode;
+	}
+
+	private Node getReturnNode() {
+		return ThreadLocalUtil.getReturnNode();
 	}
 
 	public abstract Point getConnectionPoint ();

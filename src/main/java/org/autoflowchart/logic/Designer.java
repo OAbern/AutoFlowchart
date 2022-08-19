@@ -1,6 +1,7 @@
 package org.autoflowchart.logic;
 
 import org.autoflowchart.objects.*;
+import org.autoflowchart.utils.ThreadLocalUtil;
 import org.autoflowchart.utils.WidthMap;
 
 import java.util.LinkedList;
@@ -30,11 +31,16 @@ public class Designer
 		return this.layout;
 	}
 
+	private boolean checkIsReturnNode(Node n) {
+		return n == ThreadLocalUtil.getReturnNode();
+	}
+
 	public void placeNode (Node node)
 	{
 		node.swapNodes();
 		Node nextNode = this.createShapeAndConnect(node);
 		nextNode.swapNodes();
+		if(checkIsReturnNode(node)) return;
 		if (node.getFalseNode() != null)
 			this.placeIfNodes(node);
 
@@ -149,5 +155,7 @@ public class Designer
 
 		return node.getNext();
 	}
+
+
 
 }

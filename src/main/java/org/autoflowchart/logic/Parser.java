@@ -6,8 +6,10 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
+import org.autoflowchart.objects.Element;
 import org.autoflowchart.objects.Node;
 import org.autoflowchart.objects.ShapeType;
+import org.autoflowchart.utils.ThreadLocalUtil;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -66,11 +68,14 @@ public class Parser
 
 	public static Node assembleFunction (BlockStmt blockStmt)
 	{
-		Node firstNode = new Node("main()");
-		firstNode.setType(ShapeType.ROUNDRECT);
-		Node penultNode = (Node) firstNode.connectStmt(blockStmt, null, 0);
 		Node lastNode = new Node("return;");
 		lastNode.setType(ShapeType.ROUNDRECT);
+		ThreadLocalUtil.setReturnNode(lastNode);
+
+		Node firstNode = new Node("main()");
+		firstNode.setType(ShapeType.ROUNDRECT);
+
+		Element penultNode = firstNode.connectStmt(blockStmt, null, 0);
 		penultNode.setNext(lastNode);
 
 		return firstNode;

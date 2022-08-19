@@ -2,6 +2,7 @@ package org.autoflowchart.objects;
 
 import org.autoflowchart.logic.Designer;
 import org.autoflowchart.utils.Point;
+import org.autoflowchart.utils.ThreadLocalUtil;
 
 import java.awt.*;
 import java.awt.font.FontRenderContext;
@@ -143,13 +144,17 @@ public class Node extends Element
 	public void setFalseNode (FalseNode falseNode)
 	{
 		this.falseNode = falseNode;
-		this.type = ShapeType.DIAMOND;
+		if(!isReturnNode(this)) this.type = ShapeType.DIAMOND;
+	}
+
+	private boolean isReturnNode(Node n) {
+		return n==ThreadLocalUtil.getReturnNode();
 	}
 
 	public FalseNode createAndGetFalseNode () {
 		if (this.falseNode == null) {
 			this.falseNode = new FalseNode(this);
-			this.type = ShapeType.DIAMOND;
+			if(!isReturnNode(this)) this.type = ShapeType.DIAMOND;
 		}
 		return this.falseNode;
 	}
@@ -176,7 +181,7 @@ public class Node extends Element
 			this.falseNode.setNext(next);
 		else {
 			this.falseNode = new FalseNode(this, next);
-			this.type = ShapeType.DIAMOND;
+			if(!isReturnNode(this)) this.type = ShapeType.DIAMOND;
 		}
 	}
 
