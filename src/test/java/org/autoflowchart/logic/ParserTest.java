@@ -8,17 +8,16 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ParserTest
 {
+	static final String precode =
+			"package com.company;" +
+					"public class Main {" +
+					"public static void main (String[] args) {";
+	static final String postcode =
+			"}}";
 
 	@Test
 	void parse ()
 	{
-		String precode =
-				"package com.company;" +
-				"public class Main {" +
-				"public static void main (String[] args) {";
-		String postcode =
-				"}}";
-
 		// Test 1 : 3 linear nodes
 		/*
 		int a = 1;
@@ -229,6 +228,68 @@ class ParserTest
 		assertSame(actual5.getNext(), actual7);
 		assertSame(actual6.getNext(), actual2);
 		assertTrue(actual3.getFalseNode().isNextJump());
+	}
+
+	@Test
+	void test_parse_with_return() {
+		// Test 5 : 5 linear nodes
+		/*
+		int a = Integer.parseInt(args[0]);
+        if(a == 0) {
+            return;
+        }else if(a == 1) {
+            System.out.println("1");
+            return;
+        }else {
+            System.out.println("else");
+        }
+        System.out.println("b");
+		 */
+		System.out.println("Test 5 : 5 linear nodes");
+
+		String mainCode = "int a = Integer.parseInt(args[0]);\n" +
+				"if(a == 0) {\n" +
+				"return;\n" +
+				"}else if(a == 1) {\n" +
+				"System.out.println(\"1\");\n" +
+				"return;\n" +
+				"}else {\n" +
+				"System.out.println(\"else\");\n" +
+				"}\n" +
+				"System.out.println(\"b\");";
+
+		String code = precode + mainCode + postcode;
+
+		Node expected0 = new Node("main()", 0);
+		Node expectedReturnNode = new Node("return;");
+		Node expected1 = new Node("int a = Integer.parseInt(args[0]);", 0);
+		Node expected2 = new Node("a == 0", 0);
+		Node expected3 = new Node("a == 1", 0);
+		Node expected4 = new Node("System.out.println(\"1\");", 0);
+		Node expected5 = new Node("System.out.println(\"else\");", 0);
+		Node expected6 = new Node("System.out.println(\"b\");", 0);
+
+		Node actual0 = Parser.parse(code);
+		Node actual1 = actual0.getNext();	//int a = Integer.parseInt(args[0]);
+		Node actual2 = actual1.getNext();	//a == 0
+		Node actual3 = actual2.getNext();	//return;
+		Node actual4 = actual2.getNextFalse();	//a == 1
+		Node actual5 = actual4.getNext();	//System.out.println("1");
+		Node actual6 = actual5.getNext();	//return;
+		Node actual7 = actual4.getNextFalse();	//System.out.println("else");
+		Node actual8 = actual7.getNext();	//System.out.println("b");
+		Node actual9 = actual8.getNext();	//return;
+
+		assertEquals(expected0, actual0);
+		assertEquals(expected1, actual1);
+		assertEquals(expected2, actual2);
+		assertEquals(expected3, actual4);
+		assertEquals(expected4, actual5);
+		assertEquals(expected5, actual7);
+		assertEquals(expected6, actual8);
+		assertEquals(expectedReturnNode, actual3);
+		assertEquals(expectedReturnNode, actual6);
+		assertEquals(expectedReturnNode, actual9);
 	}
 
 	private void assertEquals(Node n1, Node n2) {
