@@ -11,11 +11,16 @@ This program is no longer maintained. It was developed as a university project, 
 ## Usage
 The program is really simple: all you need to do in order to generate a flowchart is to paste your code to the left pane or import from file, and then click on little button placed exactly in the top center of the window. After that, you'll see your generated flowchart in the right pane, and you can scroll to view it in full. You can also add some changes to code and generate it again, or if you are satisfied, you can export it to .png file using the second from right button.
 
+## env
+- jdk_11
+- javafx-sdk needing to add handly
+
 ## Supported features
 * Simple sequential code
 * Branching operators (if/else if/else)
 * Cycles (for, while and foreach)
 * Jump operators (break and continue)
+* Return statement.(just in [oabern's fork]())
 
 ## Future plans
 Unfortunately, right now AutoFlowchart can generate code only for Java. So the main task of the closest new version will be to add support for other languages, for example C++ and Python. Another one very useful feature that we are planning to implement is export to .svg image format, because it will allow user to easily edit flowcharts after generation. When these features will be implemented, we will focus on fixing existing bugs and improving user experience. Finally, if you have an idea of the feature that can make AutoFlowchart better - you can always add an issue with tag "Feature suggestion", and if it's good, we will try to implement it as soon as possible.
